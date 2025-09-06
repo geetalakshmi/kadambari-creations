@@ -20,7 +20,7 @@
       </div>
     </section>
   )
-}*/
+}
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
@@ -71,3 +71,64 @@ export default function Hero() {
   )
 }
 
+*/
+
+// frontend/src/components/Hero.tsx
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
+
+// Auto-import every image in src/assets/hero with these extensions
+const imported = import.meta.glob("../images/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+  import: "default",
+}) as Record<string, string>
+
+// Sort by filename for stable order
+const images = Object.entries(imported)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, url]) => url)
+
+export default function Hero() {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: false,
+  }
+
+  // Optional fallback if no images found
+  const list = images.length ? images : ["/placeholder-hero.jpg"]
+
+  return (
+    <section className="bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 py-10 md:py-16 grid md:grid-cols-2 gap-6 items-center">
+        <div>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
+            Festive Fashion, Handpicked for You
+          </h1>
+          <p className="mt-3 text-gray-600">
+            Discover sarees, kurtis, lehengas, and more—crafted with care. New arrivals every week.
+          </p>
+        </div>
+
+        <Slider {...settings}>
+          {list.map((src, i) => (
+            <div key={i} className="rounded-2xl overflow-hidden shadow-sm">
+              <img
+                src={src}
+                alt={`Slide ${i + 1}`}
+                className="w-full h-64 md:h-96 object-cover"
+                loading="eager"
+              />
+            </div>
+          ))}
+        </Slider>
+      </div>
+    </section>
+  )
+}

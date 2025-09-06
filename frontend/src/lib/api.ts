@@ -22,3 +22,8 @@ export async function createProduct(form: FormData, adminToken: string) {
   const { data } = await api.post('/api/admin/products', form, { headers: { 'x-admin-token': adminToken } })
   return data as Product
 }
+
+export function imgUrl(pathOrUrl: string) {
+  return pathOrUrl?.startsWith("http") ? pathOrUrl : `${BASE_URL}${pathOrUrl}`;
+}
+

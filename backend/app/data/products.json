@@ -1,6 +1,16 @@
 {
   "products": [
     {
+      "id": "a06eb7a9-eac0-4b00-820c-67055e08dce1",
+      "name": "red kurti",
+      "price": 50.0,
+      "category": "women",
+      "subcategory": "blouse",
+      "description": "soft",
+      "image_url": "/static/uploads/c62c2e97-4599-4d94-9e16-1d919060f337.png",
+      "created_at": "2025-09-06T20:51:38.557939Z"
+    },
+    {
       "id": "3df2184d-5d3a-4b3a-9d3f-11aa109a8033",
       "name": "yellow",
       "price": 50.0,

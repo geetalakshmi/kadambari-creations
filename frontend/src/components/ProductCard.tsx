@@ -1,11 +1,12 @@
 import { Heart } from 'lucide-react'
 import { Product } from '../lib/api'
+import { imgUrl } from "../lib/api"
 const fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
 export default function ProductCard({ p }: { p: Product }) {
   return (
     <div className="card overflow-hidden">
       <div className="aspect-[4/5] bg-gray-50">
-        <img src={`http://localhost:8000${p.image_url}`} alt={p.name} className="w-full h-full object-cover" />
+        <img src={imgUrl(p.image_url)} alt={p.name} className="w-full h-full object-cover" />
       </div>
       <div className="p-3">
         <div className="flex items-start justify-between gap-2">

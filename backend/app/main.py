@@ -1,23 +1,39 @@
+# app/main.py
 import os
+from pathlib import Path
+from typing import Optional
+
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from typing import Optional
 from dotenv import load_dotenv
 
 from . import storage
-from .schemas import ProductIn, Product, ProductsOut, CategoriesOut
+from .schemas import ProductIn, ProductsOut, CategoriesOut
 
 load_dotenv()
 
+# --- Config
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "changeme-supersecret")
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", os.path.join(os.path.dirname(__file__), "static", "uploads"))
-ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ALLOW_ORIGINS", "").split(",") if o.strip()] or ["*"]
+
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_ROOT = BASE_DIR / "static"
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", STATIC_ROOT / "uploads"))
+
+# allow localhost:5173 in dev; add your Netlify URL in prod
+ALLOWED_ORIGINS = [
+    o.strip()
+    for o in os.getenv("CORS_ALLOW_ORIGINS", "").split(",")
+    if o.strip()
+] or ["http://localhost:5173"]
+
+# --- Ensure folders exist before mounting
+STATIC_ROOT.mkdir(parents=True, exist_ok=True)
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Kadambari Creations API", version="0.1.0")
 
-# CORS
+# --- CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -26,60 +42,74 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static file serving for images
-static_root = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/static", StaticFiles(directory=static_root), name="static")
+# --- Static
+app.mount("/static", StaticFiles(directory=str(STATIC_ROOT)), name="static")
 
+# --- Auth helper
 def admin_auth(request: Request):
-    token = request.headers.get("x-admin-token")
+    token = request.headers.get("x-admin-token")  # header is case-insensitive
     if token != ADMIN_TOKEN:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return True
 
+# --- Health
 @app.get("/api/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "static_root": str(STATIC_ROOT),
+        "upload_dir": str(UPLOAD_DIR),
+        "allowed_origins": ALLOWED_ORIGINS,
+    }
 
+# --- Categories
 @app.get("/api/categories", response_model=CategoriesOut)
 def get_categories():
     return {"categories": storage.list_categories()}
 
-#@app.get("/api/products", response_model=ProductsOut)
-#def get_products(category: Optional[str] = None, q: Optional[str] = None):
-#    return {"products": storage.list_products(category=category, q=q)}
-
+# --- Products
 @app.get("/api/products", response_model=ProductsOut)
-def get_products(category: Optional[str] = None, q: Optional[str] = None, subcategory: Optional[str] = None):
+def get_products(
+    category: Optional[str] = None,
+    q: Optional[str] = None,
+    subcategory: Optional[str] = None,
+):
     return {"products": storage.list_products(category=category, q=q, subcategory=subcategory)}
 
-
+# --- Admin: create product (with image upload)
 @app.post("/api/admin/products", dependencies=[Depends(admin_auth)])
 async def create_product(
     name: str = Form(...),
     price: float = Form(...),
     category: str = Form(...),
-    subcategory: Optional[str] = Form(None),  # <-- add
+    subcategory: Optional[str] = Form(None),
     description: str = Form(""),
     image: UploadFile = File(...),
 ):
-    # Save image
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    # Sanitize filename
-    import uuid, pathlib
-    ext = pathlib.Path(image.filename).suffix.lower()
-    fname = f"{uuid.uuid4()}{ext}"
-    dest = os.path.join(UPLOAD_DIR, fname)
-    with open(dest, "wb") as f:
-        f.write(await image.read())
-
-    image_url = f"/static/uploads/{fname}"
     if not category.strip():
-        from fastapi import HTTPException
         raise HTTPException(status_code=422, detail="Category is required")
 
-    product = storage.add_product(name=name, price=price, category=category, description=description, subcategory=subcategory, image_url=image_url)
+    import uuid
+    ext = Path(image.filename).suffix.lower() or ".jpg"
+    fname = f"{uuid.uuid4()}{ext}"
+    dest = UPLOAD_DIR / fname
+    with dest.open("wb") as f:
+        f.write(await image.read())
+
+    # store a WEB path (not OS path)
+    image_url = f"/static/uploads/{fname}"
+
+    product = storage.add_product(
+        name=name,
+        price=price,
+        category=category,
+        description=description,
+        subcategory=subcategory,
+        image_url=image_url,
+    )
     return product
 
+# --- Admin: update/delete
 @app.put("/api/admin/products/{pid}", dependencies=[Depends(admin_auth)])
 async def update_product(pid: str, payload: ProductIn):
     existing = storage.get_product(pid)
