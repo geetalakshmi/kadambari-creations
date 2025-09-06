@@ -1,0 +1,24 @@
+{
+  "categories": [
+    {
+      "id": "women",
+      "name": "Women"
+    },
+    {
+      "id": "men",
+      "name": "Men"
+    },
+    {
+      "id": "kids",
+      "name": "Kids"
+    },
+    {
+      "id": "gifts",
+      "name": "Gifts"
+    },
+    {
+      "id": "accessories",
+      "name": "Accessories"
+    }
+  ]
+}

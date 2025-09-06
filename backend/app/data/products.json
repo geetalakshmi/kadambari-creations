@@ -1,0 +1,43 @@
+{
+  "products": [
+    {
+      "id": "3df2184d-5d3a-4b3a-9d3f-11aa109a8033",
+      "name": "yellow",
+      "price": 50.0,
+      "category": "women",
+      "subcategory": "saree",
+      "description": "silk",
+      "image_url": "/static/uploads/baf234b5-f5b3-4619-9614-0d76cde7a96e.png",
+      "created_at": "2025-09-06T00:57:31.560219Z"
+    },
+    {
+      "id": "80753c0a-6f9c-429f-b85f-c90fcdaa8eb7",
+      "name": "blue",
+      "price": 30.0,
+      "category": "women",
+      "subcategory": "blouse",
+      "description": "soft",
+      "image_url": "/static/uploads/fba4facc-a56a-467b-8c13-c6e4d7b8e713.png",
+      "created_at": "2025-09-06T00:50:11.546241Z"
+    },
+    {
+      "id": "ae632ee0-d674-40dc-aad3-0852eeca41fe",
+      "name": "red",
+      "price": 20.0,
+      "category": "men",
+      "subcategory": null,
+      "description": "cotton",
+      "image_url": "/static/uploads/1031f61d-b92b-46c4-8a01-1ba3a40f3901.png",
+      "created_at": "2025-09-06T00:44:23.181493Z"
+    },
+    {
+      "id": "a3e0f9fe-24db-4c3a-b329-2e1051f77dce",
+      "name": "purple kurti",
+      "price": 50.0,
+      "category": "women",
+      "description": "silk",
+      "image_url": "/static/uploads/0089278b-277e-405b-9df6-fcec4142d1c7.png",
+      "created_at": "2025-09-05T22:52:57.734413Z"
+    }
+  ]
+}
