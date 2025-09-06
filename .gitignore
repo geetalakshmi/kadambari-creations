@@ -1,0 +1,67 @@
+# -------------------------
+# Python / FastAPI backend
+# -------------------------
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Environment variables
+.env
+*.env
+
+# Build / logs
+*.log
+*.pot
+*.pyc
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# -------------------------
+# Node / React frontend
+# -------------------------
+
+# Dependencies
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+
+# Build output
+frontend/dist/
+frontend/build/
+
+# Debug / logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Editor state
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# MacOS / OS junk
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Netlify / Vercel
+# -------------------------
+.netlify/
+.vercel/
