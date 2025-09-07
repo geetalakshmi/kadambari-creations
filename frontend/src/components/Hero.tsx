@@ -77,6 +77,9 @@ export default function Hero() {
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
+import hero1 from "../images/hero1.jpg"
+import hero2 from "../images/hero2.jpg"
+import hero3 from "../images/hero3.jpg"
 
 // Auto-import every image in src/assets/hero with these extensions
 const imported = import.meta.glob("../images/*.{jpg,jpeg,png,webp,avif}", {
@@ -102,7 +105,9 @@ export default function Hero() {
   }
 
   // Optional fallback if no images found
-  const list = images.length ? images : ["/placeholder-hero.jpg"]
+//const list = images.length ? images : ["/placeholder-hero.jpg"]
+
+const list = [hero1, hero2, hero3]
 
   return (
     <section className="bg-gray-50">
